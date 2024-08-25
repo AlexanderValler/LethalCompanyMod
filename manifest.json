@@ -1,0 +1,11 @@
+{
+  "name": "BookOfAtlas",
+  "version_number": "1.0.0",
+  "website_url": "https:/",
+  "description": "A new and unique enemy",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100",
+    "Evaisa-HookGenPatcher-0.0.5",
+    "Evaisa-LethalLib-0.15.1"
+  ]
+}
