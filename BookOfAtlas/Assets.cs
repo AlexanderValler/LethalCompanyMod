@@ -10,7 +10,7 @@ namespace BookOfAtlas
         public static AssetBundle Bundle;
         public static Dictionary<string, GameObject> Prefabs = new Dictionary<string, GameObject>();
 
-        // Store all the assets here so we don't have to grep the code for it.
+        // Store all the assets here so we don't have to grep the code for it
         public static readonly Dictionary<string, string> Manifest = new Dictionary<
             string,
             string
