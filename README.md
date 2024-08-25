@@ -1,8 +1,5 @@
 
-<img src="https://img.shields.io/badge/version-1.2.5-0AF" /></a>
-<img src="https://img.shields.io/badge/lc--version-v61-000" /></a>
-
-![banner](https://github.com/goldcraft/lc-locker/assets/1.......)
+![banner](https://github.com/goldcraft/l.......)
 
 # Serpens #
 
@@ -14,9 +11,9 @@ A new and unique enemy
 
 ## Behavior ##
 
-The serpens
+The Serpens
 
-**Further details about its behaviour can be found below - keep in mind if you're looking for something new to be surprised, these are a spoiler**
+**Further details about its behavior can be found below - keep in mind these are spoilers**
 
 <details> 
   <summary>Behavior Details:</summary>
@@ -33,4 +30,4 @@ The serpens
 
 Want to suggest new features or tweaks for this mod? Feel free to open up a suggestion issue on the GitHub repository!
 
-Furthermore there is an official mod release thread on the Lethal Company Modding Discord!
+Furthermore, there is an official mod release thread on the Lethal Company Modding Discord!
