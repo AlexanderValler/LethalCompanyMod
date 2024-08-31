@@ -53,7 +53,7 @@ namespace BookOfAtlas
                 "SerpensSpawnLevelsSet",
                 "all",
                 new ConfigDescription(
-                    "Which set of levels should by default let the Locker spawn on them? (Options are: all/none/modded/vanilla)"
+                    "Which set of levels should by default let the serpens spawn on them? (Options are: all/none/modded/vanilla)"
                 )
             );
             SerpensSpawnLevelsWithWeight = Plugin.config.Bind(

@@ -37,15 +37,15 @@ namespace BookOfAtlas
                 return;
 
             EnemyType serpensEnemy = Assets.Bundle.LoadAsset<EnemyType>(
-                "assets/exported/locker/enemies/lockerenemy.asset"
+                "assets/exported/serpens/enemies/lockerenemy.asset"
             );
 
             TerminalNode lockerTerminalNode = Assets.Bundle.LoadAsset<TerminalNode>(
-                "assets/exported/locker/enemies/lockerterminalnode.asset"
+                "assets/exported/serpens/enemies/lockerterminalnode.asset"
             );
 
             TerminalKeyword lockerTerminalKeyword = Assets.Bundle.LoadAsset<TerminalKeyword>(
-                "assets/exported/locker/enemies/lockerterminalkeyword.asset"
+                "assets/exported/serpens/enemies/lockerterminalkeyword.asset"
             );
 
             NetworkPrefabs.RegisterNetworkPrefab(serpensEnemy.enemyPrefab);

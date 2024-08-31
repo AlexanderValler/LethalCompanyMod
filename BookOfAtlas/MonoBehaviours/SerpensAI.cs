@@ -77,7 +77,7 @@ public class SerpensAI : EnemyAI
     private float activationTimer = 0f;
     private readonly float activationDuration = 1.5f;
 
-    // Duration before the locker begins rotating towards the target.
+    // Duration before the serpens begins rotating towards the target.
     private readonly float activationSpinWindup = 0.45f;
 
     private float reactivationTimer = 0f;
@@ -87,7 +87,7 @@ public class SerpensAI : EnemyAI
     private float consumeTimer = 0f;
     private readonly float consumeDuration = 2.2f;
 
-    // Duration before the locker begins the blood gushing effect to sync up with audio.
+    // Duration before the serpens begins the blood gushing effect to sync up with audio.
     private readonly float consumeBloodWindup = 1f;
     private bool consumeBloodTriggered = false;
 
@@ -144,7 +144,7 @@ public class SerpensAI : EnemyAI
     {
         base.OnDestroy();
 
-        // Remove this Locker from the list of existing ones.
+        // Remove this serpens from the list of existing ones.
         activeSerpens.Remove(this);
     }
 
@@ -152,7 +152,7 @@ public class SerpensAI : EnemyAI
     {
         base.Start();
 
-        // Add ourselves to the list of currently active Locker's.
+        // Add ourselves to the list of currently active serpens's.
         activeSerpens.Add(this);
 
         // Assign our components.
@@ -192,7 +192,7 @@ public class SerpensAI : EnemyAI
             }
         }
 
-        // Make sure to enable the Locker's main light but set the intensity to zero.
+        // Make sure to enable the serpens's main light but set the intensity to zero.
         internalLight.intensity = 0;
         internalLight.enabled = true;
 
@@ -207,7 +207,7 @@ public class SerpensAI : EnemyAI
         consumeVFXBeginTrigger.name = consumeVFXBeginTriggerName;
         consumeVFXEndTrigger.name = consumeVFXEndTriggerName;
 
-        // Get all doors in the level. We use this later to check the distance of the Locker to them.
+        // Get all doors in the level. We use this later to check the distance of the serpens to them.
         doors = Object.FindObjectsOfType(typeof(DoorLock)) as DoorLock[];
 
         debugLine = GetComponent<LineRenderer>();
@@ -459,7 +459,7 @@ public class SerpensAI : EnemyAI
                             < 1.5
                     )
                     {
-                        // Get the direction to the locker so we can overshoot the player's position.
+                        // Get the direction to the serpens so we can overshoot the player's position.
                         Vector3 directionToSerpens =
                             transform.position - closestPlayer.transform.position;
 
@@ -497,14 +497,14 @@ public class SerpensAI : EnemyAI
                         );
                         playerScanning.JumpToFearLevel(.2f);
 
-                        // Get the direction to the locker so we can overshoot the player's position.
-                        Vector3 directionToLocker =
+                        // Get the direction to the serpens so we can overshoot the player's position.
+                        Vector3 directionToSerpens =
                             transform.position - playerScanning.transform.position;
 
                         TargetServerRpc(
                             playerScanning.playerClientId,
                             playerScanning.transform.position
-                                - directionToLocker.normalized * scanOvershoot
+                                - directionToSerpens.normalized * scanOvershoot
                         );
 
                         // We hit the ping. Now reset variables.
@@ -562,7 +562,7 @@ public class SerpensAI : EnemyAI
                     }
                 }
 
-                // Check if there's a player touching the locker while it's moving. Kill them.
+                // Check if there's a player touching the serpens while it's moving. Kill them.
                 if (closestPlayer != null)
                 {
                     if (
@@ -577,7 +577,7 @@ public class SerpensAI : EnemyAI
                     }
                 }
 
-                // Check door's distance to the Locker while chasing.
+                // Check door's distance to the serpens while chasing.
                 foreach (DoorLock door in doors)
                 {
                     // Make sure we don't crash in case a door got removed by another system.
@@ -649,13 +649,13 @@ public class SerpensAI : EnemyAI
                     PlayerControllerB player = GetClosestPlayer(true);
                     if (player)
                     {
-                        // Get the direction to the locker so we can overshoot the player's position.
-                        Vector3 directionToLocker = transform.position - player.transform.position;
+                        // Get the direction to the serpens so we can overshoot the player's position.
+                        Vector3 directionToSerpens = transform.position - player.transform.position;
 
                         TargetServerRpc(
                             player.playerClientId,
                             player.transform.position
-                                - directionToLocker.normalized * reactivationOvershoot
+                                - directionToSerpens.normalized * reactivationOvershoot
                         );
                     }
                     else
@@ -713,7 +713,7 @@ public class SerpensAI : EnemyAI
                     if (!enemy.isEnemyDead)
                         enemy.KillEnemy();
 
-                // If we collided with another locker destroy this one too!
+                // If we collided with another serpens destroy this one too!
                 if (enemy.enemyType == enemyType)
                     KillEnemy(false);
 
@@ -864,7 +864,7 @@ public class SerpensAI : EnemyAI
                 audioSource.Stop();
                 audioSource.loop = false;
 
-                // Tilt the Locker forward on stopping.
+                // Tilt the serpens forward on stopping.
                 transform.rotation = transform.rotation * Quaternion.Euler(Vector3.forward * 10f);
 
                 animationController.SetBool("Chasing", false);
@@ -959,10 +959,10 @@ public class SerpensAI : EnemyAI
             bool usingLight = false;
 
             // Check the direction to the enemy.
-            Vector3 directionToLocker = transform.position - player.transform.position;
+            Vector3 directionToSerpens = transform.position - player.transform.position;
 
             // Perform an angle check used for flashlight items being held as well as the pocket flashlight.
-            float viewAngle = Vector3.Angle(player.transform.forward, directionToLocker);
+            float viewAngle = Vector3.Angle(player.transform.forward, directionToSerpens);
 
             // Check if the player has the pocket flashlight.
             if (player.pocketedFlashlight != null)
@@ -1253,88 +1253,10 @@ public class SerpensAI : EnemyAI
             yield return new WaitForSeconds(0.1f);
 
             // Kill the player.
-            player.KillPlayer(Vector3.zero, true, CauseOfDeath.Crushing, 1);
-
-            // Attach the body to the Locker.
-
-            float startTime = Time.timeSinceLevelLoad;
-
-            // Wait until the body is available or it's been 3 seconds to fail out.
-            yield return new WaitUntil(
-                () => player.deadBody != null || Time.timeSinceLevelLoad - startTime > 3f
-            );
-
-            if (player.deadBody != null)
-            {
-                player.deadBody.attachedTo = eye.transform;
-                player.deadBody.attachedLimb = player.deadBody.bodyParts[5];
-                player.deadBody.matchPositionExactly = true;
-            }
-
-            // Delay for removing/disabling the body.
-            yield return new WaitUntil(
-                () => Time.timeSinceLevelLoad - startTime > consumeDuration * 0.75
-            );
-
-            if (player.deadBody != null)
-            {
-                player.deadBody.attachedTo = null;
-                player.deadBody.attachedLimb = null;
-                player.deadBody.matchPositionExactly = false;
-
-                // Disable the body.
-                player.deadBody.gameObject.SetActive(false);
-
-                player.deadBody = null;
-            }
+            player.KillPlayer(Vector3.zero, true, CauseOfDeath.Mauling, 1);
         }
-
         yield break;
     }
 
-    public void PlayerScan(PlayerControllerB player)
-    {
-        if (
-            currentBehaviourStateIndex == (int)State.Dormant
-            || currentBehaviourStateIndex == (int)State.Debug
-            || currentBehaviourStateIndex == (int)State.Chasing
-        )
-        {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
 
-            // Disallow scanning on top of the Locker triggering it.
-            if (
-                distance < 2
-                && Mathf.Abs(player.transform.position.y - transform.position.y) + 2 > 2
-            )
-                return;
-
-            if (
-                // Make a raycast to the player and check that we didn't hit our room mask.
-                // We adjust the linecast slightly to the side to avoid thin obstacles and not check from the ground.
-                distance < 90
-                && !Physics.Linecast(
-                    transform.position + Vector3.up * 2 + Vector3.right * .2f,
-                    player.transform.position + Vector3.up * 2 + Vector3.right * .2f,
-                    StartOfRound.Instance.collidersAndRoomMask
-                )
-            )
-            {
-                // Make sure we assign our local player that's scanning.
-                playerScanning = player;
-                if (playerScanned == false)
-                {
-                    // Delay the targeting call until the scan hits the Locker. At 90m this is 3 seconds.
-                    playerScanned = true;
-                    playerScannedTimer = 0;
-                    playerScannedDuration = distance / 30;
-                }
-                else if ((playerScannedDuration - playerScannedTimer) < distance / 30)
-                {
-                    // The player scanned while they were closer and the timer has not reached yet.
-                    playerScannedDuration = distance / 30;
-                }
-            }
-        }
-    }
 }

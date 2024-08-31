@@ -16,8 +16,8 @@ namespace BookOfAtlas
             string
         >()
         {
-            { "locker", "assets/exported/locker/enemies/locker.prefab" },
-            { "lockerenemy", "assets/exported/locker/enemies/lockerenemy.asset" },
+            { "serpens", "assets/exported/serpens/enemies/serpens.prefab" },
+            { "lockerenemy", "assets/exported/serpens/enemies/lockerenemy.asset" },
         };
 
         public enum LoadStatusCode : ushort
