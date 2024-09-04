@@ -35,7 +35,7 @@ public class SerpensAI : EnemyAI
     private AudioSource audioSource;
     private Animator animationController;
     private Material eyeMaterial;
-    private Light internalLight;
+    private Light BodyLight;
     private List<Light> scrapeLights;
     private DoorLock[] doors = [];
 
@@ -94,12 +94,6 @@ public class SerpensAI : EnemyAI
     // Track the duration between finishing a chase and consuming a player.
     private float resetTimer = 0f;
     private readonly float resetDuration = 1f;
-
-    // These variables will keep track if the player has scanned and if we're performing the distance timeout.
-    private PlayerControllerB playerScanning;
-    private bool playerScanned = false;
-    private float playerScannedTimer = 0f;
-    private float playerScannedDuration = 0f;
 
     // Keep track of retargeting timings to not send an abundance of RPCs.
     private float lastTargetTime;
@@ -181,7 +175,7 @@ public class SerpensAI : EnemyAI
         {
             if (light.gameObject.name == "InternalLight")
             {
-                internalLight = light;
+                BodyLight = light;
             }
             else // This is a scrape light.
             {
@@ -193,8 +187,8 @@ public class SerpensAI : EnemyAI
         }
 
         // Make sure to enable the serpens's main light but set the intensity to zero.
-        internalLight.intensity = 0;
-        internalLight.enabled = true;
+        BodyLight.intensity = 0;
+        BodyLight.enabled = true;
 
         targetPosition = Vector3.zero;
 
@@ -289,8 +283,8 @@ public class SerpensAI : EnemyAI
                 currentEyeIntensity = Mathf.Lerp(currentEyeIntensity, 0, Time.deltaTime);
 
                 // Fade out our lights entirely.
-                internalLight.intensity = Mathf.Lerp(
-                    internalLight.intensity,
+                BodyLight.intensity = Mathf.Lerp(
+                    BodyLight.intensity,
                     0,
                     Time.deltaTime * 8
                 );
@@ -320,8 +314,8 @@ public class SerpensAI : EnemyAI
                 currentEyeIntensity = Mathf.Lerp(currentEyeIntensity, 100000, Time.deltaTime);
 
                 // Fade in our internal lights slowly.
-                internalLight.intensity = Mathf.Lerp(
-                    internalLight.intensity,
+                BodyLight.intensity = Mathf.Lerp(
+                    BodyLight.intensity,
                     40000,
                     Time.deltaTime / 4
                 );
@@ -349,8 +343,8 @@ public class SerpensAI : EnemyAI
                 }
 
                 // Fade in our internal lights quickly.
-                internalLight.intensity = Mathf.Lerp(
-                    internalLight.intensity,
+                BodyLight.intensity = Mathf.Lerp(
+                    BodyLight.intensity,
                     20000,
                     Time.deltaTime
                 );
@@ -409,8 +403,8 @@ public class SerpensAI : EnemyAI
                 currentEyeIntensity = Mathf.Lerp(currentEyeIntensity, 0, Time.deltaTime);
 
                 // Fade out our lights.
-                internalLight.intensity = Mathf.Lerp(
-                    internalLight.intensity,
+                BodyLight.intensity = Mathf.Lerp(
+                    BodyLight.intensity,
                     0,
                     Time.deltaTime * 2
                 );
@@ -481,38 +475,6 @@ public class SerpensAI : EnemyAI
                         StartOfRound.Instance.localPlayerController.transform.position
                     );
                 }
-
-                // Check if a player scanned.
-                if (playerScanned)
-                {
-                    playerScannedTimer += Time.fixedDeltaTime;
-                    if (playerScannedTimer > playerScannedDuration)
-                    {
-                        currentEyeColor = eyeColorScan;
-
-                        // Play the ping return sound.
-                        audioSource.PlayOneShot(
-                            AudioClipPing,
-                            1.5f * Config.SerpensVolumeAdjustment.Value
-                        );
-                        playerScanning.JumpToFearLevel(.2f);
-
-                        // Get the direction to the serpens so we can overshoot the player's position.
-                        Vector3 directionToSerpens =
-                            transform.position - playerScanning.transform.position;
-
-                        TargetServerRpc(
-                            playerScanning.playerClientId,
-                            playerScanning.transform.position
-                                - directionToSerpens.normalized * scanOvershoot
-                        );
-
-                        // We hit the ping. Now reset variables.
-                        playerScanned = false;
-                        playerScannedTimer = 0;
-                        playerScannedDuration = 0;
-                    }
-                }
                 break;
 
             case (int)State.Activating:
@@ -533,33 +495,6 @@ public class SerpensAI : EnemyAI
                         StartOfRound.Instance.localPlayerController.playerClientId,
                         StartOfRound.Instance.localPlayerController.transform.position
                     );
-                }
-
-                // Check if the local player scanned.
-                if (playerScanned)
-                {
-                    playerScannedTimer += Time.fixedDeltaTime;
-                    if (playerScannedTimer > playerScannedDuration)
-                    {
-                        // Play the ping return sound.
-                        audioSource.PlayOneShot(
-                            AudioClipPing,
-                            1.5f * Config.SerpensVolumeAdjustment.Value
-                        );
-                        playerScanning.JumpToFearLevel(.5f);
-
-                        currentEyeColor = eyeColorScan;
-
-                        TargetServerRpc(
-                            playerScanning.playerClientId,
-                            playerScanning.transform.position
-                        );
-
-                        // We hit the ping. Now reset variables.
-                        playerScanned = false;
-                        playerScannedTimer = 0;
-                        playerScannedDuration = 0;
-                    }
                 }
 
                 // Check if there's a player touching the serpens while it's moving. Kill them.
